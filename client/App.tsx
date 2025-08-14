@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 
 // Lazy load components for better initial load performance
 const Index = lazy(() => import("./pages/Index"));
+const BookingForm = lazy(() => import("./pages/BookingForm"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Optimize QueryClient configuration
@@ -38,6 +39,7 @@ const App = () => (
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/booking-form" element={<BookingForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

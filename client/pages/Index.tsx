@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback, memo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,7 +24,7 @@ const HeroImage = memo(({ src, alt }: { src: string; alt: string }) => (
       className="absolute inset-0 w-full h-full object-cover object-center"
       loading="eager"
       decoding="async"
-      fetchpriority="high"
+  fetchPriority="high"
       width="800"
       height="600"
       sizes="(max-width: 768px) 100vw, 50vw"
@@ -154,6 +156,8 @@ export default function Index() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
+  const [showConsent, setShowConsent] = useState(false);
+  const navigate = useNavigate();
 
   // Use optimized hooks
   const { slots, isLoading, error, searchAvailability, clearResults, cleanup } =
@@ -340,10 +344,43 @@ export default function Index() {
               <Button
                 className="px-12 py-3 bg-natwest-purple hover:bg-natwest-purple-dark text-white font-medium rounded-full"
                 disabled={!selectedSlot}
+                onClick={() => setShowConsent(true)}
               >
                 Next
               </Button>
             </div>
+
+            {/* Consent Dialog */}
+            <Dialog open={showConsent} onOpenChange={setShowConsent}>
+              <DialogContent className="max-w-xl">
+                <div className="text-center">
+                  <h2 className="text-xl font-semibold mb-2">Data Privacy</h2>
+                  <div className="bg-yellow-50 border border-yellow-300 rounded p-2 mb-4 text-yellow-800 text-sm">
+                    To proceed please agree with our Privacy policy.
+                  </div>
+                  <p className="mb-4 text-gray-700 text-sm">
+                    NatWest collects your name and mobile number to help identify you and provide you with updates on the progress of your service. The information is deleted after your appointment as per the bank's policy and no bank records are updated as a result.
+                  </p>
+                  <p className="mb-4 text-gray-700 text-sm">
+                    Our full Privacy Policy is available at natwest.com/privacy or click the link below
+                  </p>
+                  <a href="https://natwest.com/privacy" target="_blank" rel="noopener noreferrer" className="text-natwest-purple underline mb-4 block">Privacy Policy Link</a>
+                  <div className="flex justify-center gap-4 mt-6">
+                    <Button variant="outline" className="px-6" onClick={() => {
+                      setShowConsent(false);
+                      setSelectedDate("");
+                      setSelectedTime("");
+                      setSelectedSlot(null);
+                      navigate("/");
+                    }}>I do not agree</Button>
+                    <Button className="px-6 bg-natwest-purple text-white" onClick={() => {
+                      setShowConsent(false);
+                      navigate("/booking-form");
+                    }}>I agree</Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
